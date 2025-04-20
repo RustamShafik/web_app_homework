@@ -14,9 +14,15 @@ class MyServer(BaseHTTPRequestHandler):
     def do_GET(self):
         """ Метод для обработки входящих GET-запросов """
         self.send_response(200) # Отправка кода ответа
-        self.send_header("Content-type", "application/json") # Отправка типа данных, который будет передаваться
+        self.send_header("Content-type", "text/html") # Отправка типа данных, который будет передаваться
         self.end_headers() # Завершение формирования заголовков ответа
-        self.wfile.write(bytes("{'message': 'OK'}", "utf-8")) # Тело ответа
+
+        try:
+            with open("contacts.html", "r", encoding="utf-8") as f:
+                html = f.read()
+                self.wfile.write(bytes(html, "utf-8")) # Тело ответа
+        except FileNotFoundError:
+            self.send_error(404, "contacts.html not found")
 
 if __name__ == "__main__":
     # Инициализация веб-сервера, который будет по заданным параметрах в сети
